@@ -108,8 +108,60 @@ class ComputeOthello:
 
     # ทำ function นี้ให้สมบูรณ์
     # ห้ามแก้ชื่อ function และตัว arguments ที่เป็น input ของ function
-    def findBestMove(self,board,current_player,opponent,num_tiles):
+    def max_value(self, alpha, beta, depth):
+        if depth == 0 or not self.has_legal_move():
+            return self.evaluate_board()
+
+        max_score = float('-inf')
+        for move in self.get_legal_moves():
+            self.move = move
+            self.make_move()
+            self.current_player, self.opponent = self.opponent, self.current_player
+            score = self.min_value(alpha, beta, depth-1)
+            self.undo_move()
+            if score > max_score:
+                max_score = score
+            if max_score >= beta:
+                return max_score
+            alpha = max(alpha, max_score)
+        return max_score
+
+    def min_value(self, alpha, beta, depth):
+        if depth == 0 or not self.has_legal_move():
+            return self.evaluate_board()
+
+        min_score = float('inf')
+        for move in self.get_legal_moves():
+            self.move = move
+            self.make_move()
+            self.current_player, self.opponent = self.opponent, self.current_player
+            score = self.max_value(alpha, beta, depth-1)
+            self.undo_move()
+            if score < min_score:
+                min_score = score
+            if min_score <= alpha:
+                return min_score
+            beta = min(beta, min_score)
+        return min_score
+
+    def find_best_move(self, board, current_player, opponent, num_tiles, depth):
         self.board = board
         self.num_tiles = num_tiles
         self.current_player = current_player
         self.opponent = opponent
+
+        best_move = None
+        max_score = float('-inf')
+        alpha = float('-inf')
+        beta = float('inf')
+        for move in self.get_legal_moves():
+            self.move = move
+            self.make_move()
+            self.current_player, self.opponent = self.opponent, self.current_player
+            score = self.min_value(alpha, beta, depth-1)
+            self.undo_move()
+            if score > max_score:
+                max_score = score
+                best_move = move
+            alpha = max(alpha, max_score)
+        return best_move
