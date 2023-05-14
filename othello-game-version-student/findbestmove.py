@@ -143,7 +143,7 @@ class ComputeOthello:
         self.num_tiles = num_tiles
         self.current_player = current_player
         self.opponent = opponent
-        depth = 0
+        depth = 3
 
         best_move = None
         max_score = float('-inf')
