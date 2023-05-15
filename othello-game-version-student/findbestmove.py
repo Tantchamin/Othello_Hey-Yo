@@ -159,3 +159,34 @@ class ComputeOthello:
                 best_move = move
             alpha = max(alpha, max_score)
         return best_move
+def get_heuristic_score(self):
+    score = 0
+
+    # กำหนดค่าให้กับโบราณสภาพบนกระดาน
+    board_state = self.board.get_state()
+    player_tiles = self.board.count_tiles(self.current_player)
+    opponent_tiles = self.board.count_tiles(self.opponent)
+
+    # คะแนนที่ได้จากจำนวนเหล็กที่ครอบครอง
+    score += player_tiles - opponent_tiles
+
+    # คะแนนที่ได้จากตำแหน่งบนกระดาน
+    position_score = [
+        [100, -20, 10, 5, 5, 10, -20, 100],
+        [-20, -50, -2, -2, -2, -2, -50, -20],
+        [10, -2, -1, -1, -1, -1, -2, 10],
+        [5, -2, -1, -1, -1, -1, -2, 5],
+        [5, -2, -1, -1, -1, -1, -2, 5],
+        [10, -2, -1, -1, -1, -1, -2, 10],
+        [-20, -50, -2, -2, -2, -2, -50, -20],
+        [100, -20, 10, 5, 5, 10, -20, 100]
+    ]
+
+    for row in range(8):
+        for col in range(8):
+            if board_state[row][col] == self.current_player:
+                score += position_score[row][col]
+            elif board_state[row][col] == self.opponent:
+                score -= position_score[row][col]
+
+    return score
