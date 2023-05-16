@@ -143,7 +143,7 @@ class ComputeOthello:
         self.num_tiles = num_tiles
         self.current_player = current_player
         self.opponent = opponent
-        depth = 3
+        depth = 0
 
         best_move = None
         max_score = float('-inf')
@@ -159,34 +159,83 @@ class ComputeOthello:
                 best_move = move
             alpha = max(alpha, max_score)
         return best_move
-def get_heuristic_score(self):
-    score = 0
+position_scores = []
 
-    # กำหนดค่าให้กับโบราณสภาพบนกระดาน
-    board_state = self.board.get_state()
-    player_tiles = self.board.count_tiles(self.current_player)
-    opponent_tiles = self.board.count_tiles(self.opponent)
+position_score_1 = [
+    [100, -20, 10, 5, 5, 10, -20, 100],
+    [-20, -50, -2, -2, -2, -2, -50, -20],
+    [10, -2, 0, 0, 0, 0, -2, 10],
+    [5, -2, 0, 0, 0, 0, -2, 5],
+    [5, -2, 0, 0, 0, 0, -2, 5],
+    [10, -2, 0, 0, 0, 0, -2, 10],
+    [-20, -50, -2, -2, -2, -2, -50, -20],
+    [100, -20, 10, 5, 5, 10, -20, 100]
+]
+position_scores.append(position_score_1)
 
-    # คะแนนที่ได้จากจำนวนเหล็กที่ครอบครอง
-    score += player_tiles - opponent_tiles
+position_score_2 = [
+    [50, -10, 5, 2, 2, 5, -10, 50],
+    [-10, -20, -1, -1, -1, -1, -20, -10],
+    [5, -1, 0, 0, 0, 0, -1, 5],
+    [2, -1, 0, 0, 0, 0, -1, 2],
+    [2, -1, 0, 0, 0, 0, -1, 2],
+    [5, -1, 0, 0, 0, 0, -1, 5],
+    [-10, -20, -1, -1, -1, -1, -20, -10],
+    [50, -10, 5, 2, 2, 5, -10, 50]
+]
+position_scores.append(position_score_2)
+position_score_random = [
+    [10, -3, 5, 4, 4, 5, -3, 10],
+    [-3, -5, -1, -1, -1, -1, -5, -3],
+    [5, -1, 0, 0, 0, 0, -1, 5],
+    [4, -1, 0, 0, 0, 0, -1, 4],
+    [4, -1, 0, 0, 0, 0, -1, 4],
+    [5, -1, 0, 0, 0, 0, -1, 5],
+    [-3, -5, -1, -1, -1, -1, -5, -3],
+    [10, -3, 5, 4, 4, 5, -3, 10]
+]
+position_scores.append(position_score_random)
+position_score_aggressive = [
+    [100, -25, 10, 5, 5, 10, -25, 100],
+    [-25, -50, -2, -2, -2, -2, -50, -25],
+    [10, -2, 1, 1, 1, 1, -2, 10],
+    [5, -2, 1, 1, 1, 1, -2, 5],
+    [5, -2, 1, 1, 1, 1, -2, 5],
+    [10, -2, 1, 1, 1, 1, -2, 10],
+    [-25, -50, -2, -2, -2, -2, -50, -25],
+    [100, -25, 10, 5, 5, 10, -25, 100]
+]
+position_scores.append(position_score_aggressive)
+position_score_hybrid = [
+    [100, -20, 10, 5, 5, 10, -20, 100],
+    [-20, -50, -2, -2, -2, -2, -50, -20],
+    [10, -2, 1, 1, 1, 1, -2, 10],
+    [5, -2, 1, 1, 1, 1, -2, 5],
+    [5, -2, 1, 1, 1, 1, -2, 5],
+    [10, -2, 1, 1, 1, 1, -2, 10],
+    [-20, -50, -2, -2, -2, -2, -50, -20],
+    [100, -20, 10, 5, 5, 10, -20, 100]
+]
+position_scores.append(position_score_hybrid)
 
-    # คะแนนที่ได้จากตำแหน่งบนกระดาน
-    position_score = [
-        [100, -20, 10, 5, 5, 10, -20, 100],
-        [-20, -50, -2, -2, -2, -2, -50, -20],
-        [10, -2, -1, -1, -1, -1, -2, 10],
-        [5, -2, -1, -1, -1, -1, -2, 5],
-        [5, -2, -1, -1, -1, -1, -2, 5],
-        [10, -2, -1, -1, -1, -1, -2, 10],
-        [-20, -50, -2, -2, -2, -2, -50, -20],
-        [100, -20, 10, 5, 5, 10, -20, 100]
-    ]
-
-    for row in range(8):
-        for col in range(8):
-            if board_state[row][col] == self.current_player:
-                score += position_score[row][col]
-            elif board_state[row][col] == self.opponent:
-                score -= position_score[row][col]
-
-    return score
+def evaluate_position(self):
+    total_score = 0
+    for i in range(8):
+        for j in range(8):
+            if self.board[i][j] == self.current_player:
+                # ใช้ตาราง position_score_1
+                total_score += position_scores[0][i][j]
+            elif self.board[i][j] == self.opponent:
+                # ใช้ตาราง position_score_2
+                total_score += position_scores[1][i][j]
+            elif self.board[i][j] == self.opponent:
+                
+                total_score += position_scores[2][i][j]
+            elif self.board[i][j] == self.opponent:
+                
+                total_score += position_scores[3][i][j]
+            elif self.board[i][j] == self.opponent:
+                
+                total_score += position_scores[4][i][j]    
+            
+    return total_score
