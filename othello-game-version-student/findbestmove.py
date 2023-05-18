@@ -85,12 +85,29 @@ class ComputeOthello:
                 if self.is_legal_move(move):
                     moves.append(move)
         
+        # Order moves based on the heuristic value
+        moves.sort(key=lambda move: self.heuristic_value(move), reverse=True)
+        
         if self.conner:
             connerset = [0,7]
             result = [sublist for sublist in moves if any(item in sublist for item in connerset)]
             if result:
                 return result
         return moves
+    
+    def heuristic_value(self, move):
+        weights = [
+            [100, -20,  10,   5,   5,  10, -20, 100],
+            [-20, -50,  -2,  -2,  -2,  -2, -50, -20],
+            [ 10,  -2,   1,   1,   1,   1,  -2,  10],
+            [  5,  -2,   1,   0,   0,   1,  -2,   5],
+            [  5,  -2,   1,   0,   0,   1,  -2,   5],
+            [ 10,  -2,   1,   1,   1,   1,  -2,  10],
+            [-20, -50,  -2,  -2,  -2,  -2, -50, -20],
+            [100, -20,  10,   5,   5,  10, -20, 100]
+        ]
+
+        return weights[move[0]][move[1]]
 
     def is_legal_move(self, move):
         if move != () and self.is_valid_coord(move[0], move[1]) \
@@ -110,7 +127,7 @@ class ComputeOthello:
     # ห้ามแก้ชื่อ function และตัว arguments ที่เป็น input ของ function
     def max_value(self, alpha, beta, depth):
         if depth == 0 or not self.has_legal_move():
-            return self.evaluate_position(self)
+            return self.evaluate(self)
         
         max_score = float('-inf')
         for move in self.get_legal_moves():
@@ -126,6 +143,8 @@ class ComputeOthello:
         return max_score
 
     def min_value(self, alpha, beta, depth):
+        if depth == 0 or not self.has_legal_move():
+            return self.evaluate(self)
 
         min_score = float('inf')
         for move in self.get_legal_moves():
@@ -162,91 +181,25 @@ class ComputeOthello:
             alpha = max(alpha, max_score)
         return best_move
     
-position_scores = []
+    def evaluate(board,self):
+        # Define the positional weights for each square on the board
+        weights = [
+            [100, -20,  10,   5,   5,  10, -20, 100],
+            [-20, -50,  -2,  -2,  -2,  -2, -50, -20],
+            [ 10,  -2,   1,   1,   1,   1,  -2,  10],
+            [  5,  -2,   1,   0,   0,   1,  -2,   5],
+            [  5,  -2,   1,   0,   0,   1,  -2,   5],
+            [ 10,  -2,   1,   1,   1,   1,  -2,  10],
+            [-20, -50,  -2,  -2,  -2,  -2, -50, -20],
+            [100, -20,  10,   5,   5,  10, -20, 100]
+        ]
 
-position_score_1 = [
-        [100, -20, 10, 5, 5, 10, -20, 100],
-        [-20, -50, -2, -2, -2, -2, -50, -20],
-        [10, -2, 0, 0, 0, 0, -2, 10],
-        [5, -2, 0, 0, 0, 0, -2, 5],
-        [5, -2, 0, 0, 0, 0, -2, 5],
-        [10, -2, 0, 0, 0, 0, -2, 10],
-        [-20, -50, -2, -2, -2, -2, -50, -20],
-        [100, -20, 10, 5, 5, 10, -20, 100]
-    ]
-    
-position_scores.append(position_score_1)
+        score = 0
+        for row in range(self.n):
+            for col in range(self.n):
+                if self.board[row][col] == self.current_player + 1:
+                    score += weights[row][col]  # Increase score for AI player's pieces
+                elif self.board[row][col] == self.opponent + 1:
+                    score -= weights[row][col]  # Decrease score for opponent's pieces
 
-position_score_2 = [
-        [50, -10, 5, 2, 2, 5, -10, 50],
-        [-10, -20, -1, -1, -1, -1, -20, -10],
-        [5, -1, 0, 0, 0, 0, -1, 5],
-        [2, -1, 0, 0, 0, 0, -1, 2],
-        [2, -1, 0, 0, 0, 0, -1, 2],
-        [5, -1, 0, 0, 0, 0, -1, 5],
-        [-10, -20, -1, -1, -1, -1, -20, -10],
-        [50, -10, 5, 2, 2, 5, -10, 50]
-    ]
-    
-position_scores.append(position_score_2)
-
-position_score_random = [
-        [10, -3, 5, 4, 4, 5, -3, 10],
-        [-3, -5, -1, -1, -1, -1, -5, -3],
-        [5, -1, 0, 0, 0, 0, -1, 5],
-        [4, -1, 0, 0, 0, 0, -1, 4],
-        [4, -1, 0, 0, 0, 0, -1, 4],
-        [5, -1, 0, 0, 0, 0, -1, 5],
-        [-3, -5, -1, -1, -1, -1, -5, -3],
-        [10, -3, 5, 4, 4, 5, -3, 10]
-    ]
-    
-position_scores.append(position_score_random)
-    
-position_score_aggressive = [
-        [100, -25, 10, 5, 5, 10, -25, 100],
-        [-25, -50, -2, -2, -2, -2, -50, -25],
-        [10, -2, 1, 1, 1, 1, -2, 10],
-        [5, -2, 1, 1, 1, 1, -2, 5],
-        [5, -2, 1, 1, 1, 1, -2, 5],
-        [10, -2, 1, 1, 1, 1, -2, 10],
-        [-25, -50, -2, -2, -2, -2, -50, -25],
-        [100, -25, 10, 5, 5, 10, -25, 100]
-    ]
-    
-position_scores.append(position_score_aggressive)
-    
-position_score_hybrid = [
-        [100, -20, 10, 5, 5, 10, -20, 100],
-        [-20, -50, -2, -2, -2, -2, -50, -20],
-        [10, -2, 1, 1, 1, 1, -2, 10],
-        [5, -2, 1, 1, 1, 1, -2, 5],
-        [5, -2, 1, 1, 1, 1, -2, 5],
-        [10, -2, 1, 1, 1, 1, -2, 10],
-        [-20, -50, -2, -2, -2, -2, -50, -20],
-        [100, -20, 10, 5, 5, 10, -20, 100]
-    ]
-    
-position_scores.append(position_score_hybrid)
-
-def evaluate_position(self):
-    total_score = 0
-    for i in range(8):
-        for j in range(8):
-            if self.board[i][j] == self.current_player:
-                # ใช้ตาราง position_score_1
-                total_score += position_scores[0][i][j]
-            elif self.board[i][j] == self.opponent:
-                # ใช้ตาราง position_score_2
-                total_score += position_scores[1][i][j]
-            elif self.board[i][j] == self.opponent:
-                
-                total_score += position_scores[2][i][j]
-            elif self.board[i][j] == self.opponent:
-                
-                total_score += position_scores[3][i][j]
-            elif self.board[i][j] == self.opponent:
-
-                total_score += position_scores[4][i][j]    
-            
-    return total_score
+        return score
