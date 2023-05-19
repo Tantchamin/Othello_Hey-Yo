@@ -107,13 +107,13 @@ class ComputeOthello:
     def evaluate_position(self):
         total_score = 0
         if self.num_tiles[self.current_player] < 10:
-        # ใช้ตารางคะแนนตามสถานะการที่คุณต้องการ (เช่น position_score_3)
+        # ใช้ตารางคะแนนตามสถานะการที่คุณต้องการ (เช่น position_score_2)
          for i in range(8):
             for j in range(8):
                 if self.board[i][j] == self.current_player:
-                    total_score += position_scores[2][i][j]
+                    total_score += position_scores[1][i][j]
                 elif self.board[i][j] == self.opponent:
-                    total_score += position_scores[2][i][j]
+                    total_score += position_scores[1][i][j]
         elif self.num_tiles[self.current_player] >= 10 and self.num_tiles[self.current_player] < 30:
         # ใช้ตารางคะแนนตามสถานะการที่คุณต้องการ (เช่น position_score_4)
             for i in range(8):
@@ -191,14 +191,14 @@ class ComputeOthello:
 position_scores = []
 
 position_score_1 = [
-    [100, -20, 10, 5, 5, 10, -20, 100],
-    [-20, -50, -2, -2, -2, -2, -50, -20],
-    [10, -2, 0, 0, 0, 0, -2, 10],
-    [5, -2, 0, 0, 0, 0, -2, 5],
-    [5, -2, 0, 0, 0, 0, -2, 5],
-    [10, -2, 0, 0, 0, 0, -2, 10],
-    [-20, -50, -2, -2, -2, -2, -50, -20],
-    [100, -20, 10, 5, 5, 10, -20, 100]
+     [100, -20,  10,   5,   5,  10, -20, 100],
+            [-20, -20,  5,  -2,  -2,  5, -20, -20],
+            [ 10,  5,   3,   3,   3,   3,  5,  10],
+            [  5,  -2,   3,   0,   0,   3,  -2,   5],
+            [  5,  -2,   3,   0,   0,   3,  -2,   5],
+            [ 10,  5,   3,   3,   3,   3,  5,  10],
+            [-20, -20,  5,  -2,  -2,  5, -20, -20],
+            [100, -20,  10,   5,   5,  10, -20, 100]
 ]
 position_scores.append(position_score_1)
 
