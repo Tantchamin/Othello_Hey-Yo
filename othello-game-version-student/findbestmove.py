@@ -104,6 +104,33 @@ class ComputeOthello:
         if 0 <= row < self.n and 0 <= col < self.n:
             return True
         return False
+    def evaluate_position(self):
+        total_score = 0
+        if self.num_tiles[self.current_player] < 10:
+        # ใช้ตารางคะแนนตามสถานะการที่คุณต้องการ (เช่น position_score_3)
+         for i in range(8):
+            for j in range(8):
+                if self.board[i][j] == self.current_player:
+                    total_score += position_scores[2][i][j]
+                elif self.board[i][j] == self.opponent:
+                    total_score += position_scores[2][i][j]
+        elif self.num_tiles[self.current_player] >= 10 and self.num_tiles[self.current_player] < 30:
+        # ใช้ตารางคะแนนตามสถานะการที่คุณต้องการ (เช่น position_score_4)
+            for i in range(8):
+                for j in range(8):
+                    if self.board[i][j] == self.current_player:
+                        total_score += position_scores[3][i][j]
+                    elif self.board[i][j] == self.opponent:
+                        total_score += position_scores[3][i][j]
+        else:
+        # ใช้ตารางคะแนนตามสถานะการที่คุณต้องการ (เช่น position_score_5)
+            for i in range(8):
+             for j in range(8):
+                if self.board[i][j] == self.current_player:
+                    total_score += position_scores[4][i][j]
+                elif self.board[i][j] == self.opponent:
+                    total_score += position_scores[4][i][j]
+             return total_score
 
 
     # ทำ function นี้ให้สมบูรณ์
@@ -114,6 +141,7 @@ class ComputeOthello:
         for move in self.get_legal_moves():
             self.move = move
             self.make_move()
+            self.evaluate_position()
             self.current_player, self.opponent = self.opponent, self.current_player
             score = self.min_value(alpha, beta, depth-1)
             if score > max_score:
@@ -129,6 +157,7 @@ class ComputeOthello:
         for move in self.get_legal_moves():
             self.move = move
             self.make_move()
+            self.evaluate_position()
             self.current_player, self.opponent = self.opponent, self.current_player
             score = self.max_value(alpha, beta, depth-1)
             if score < min_score:
@@ -218,24 +247,3 @@ position_score_hybrid = [
 ]
 position_scores.append(position_score_hybrid)
 
-def evaluate_position(self):
-    total_score = 0
-    for i in range(8):
-        for j in range(8):
-            if self.board[i][j] == self.current_player:
-                # ใช้ตาราง position_score_1
-                total_score += position_scores[0][i][j]
-            elif self.board[i][j] == self.opponent:
-                # ใช้ตาราง position_score_2
-                total_score += position_scores[1][i][j]
-            elif self.board[i][j] == self.opponent:
-                
-                total_score += position_scores[2][i][j]
-            elif self.board[i][j] == self.opponent:
-                
-                total_score += position_scores[3][i][j]
-            elif self.board[i][j] == self.opponent:
-                
-                total_score += position_scores[4][i][j]    
-            
-    return total_score
